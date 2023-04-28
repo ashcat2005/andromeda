@@ -30,13 +30,13 @@ def initCond(x, k, blackhole):
     kphi = k[3]
     '''
     # Metric components
-    g_tt, g_rr, g_thth, g_phph = blackhole.metric(x)
+    g_tt, g_rr, g_thth, g_phph, g_tph= blackhole.metric(x)
     
     # Lower k-indices
-    k_t = g_tt*k[0] 
+    k_t = g_tt*k[0] + g_tph*k[3]
     k_r = g_rr*k[1]
     k_th = g_thth*k[2]
-    k_phi = g_phph*k[3]
+    k_phi = g_phph*k[3] + g_tph*k[0]
     
     return [x[0], x[1], x[2], x[3], k_t, k_r, k_th, k_phi]
 
@@ -72,19 +72,21 @@ class Photon:
         self.iC = initCond(self.xin, self.kin, blackhole)
 
 
-def geo_integ(p, blackhole, in_edge, out_edge):
+def geo_integ(p, blackhole, acc_structure, detector):
     '''
     Integrates the motion equations of the photon 
     '''
-    lmbda = linspace(0,-200,1500)
+    in_edge, out_edge = acc_structure.in_edge, acc_structure.out_edge
+    final_lmbda = 2*detector.D
+    lmbda = linspace(0, -final_lmbda,8*final_lmbda)
     sol = odeint(blackhole.geodesics, p.iC, lmbda)
     indx = len(sol[:,1])
     p.fP = [0,0,0,0,0,0,0,0]
-    for i in range(indx):
+    for i in range(indx//3, indx):
         if sol[i,1] < blackhole.EH + 1e-5: 
             indx = i
             break
-        elif abs(sol[i,1]*cos(sol[i,2])) < 1e-1:
+        elif cos(sol[i,2])*cos(sol[i+1,2])<0:#abs(sol[i,1]*cos(sol[i,2])) < 1e-1:
             if sol[i,1] > in_edge and sol[i,1] < out_edge:
                 indx = i
                 p.fP = sol[i]
@@ -123,7 +125,7 @@ class Image:
         self.image_data = zeros([self.detector.numPixels, self.detector.numPixels])
         photon=1
         for p in self.photon_list:
-            geo_integ(p, blackhole, acc_structure.in_edge, acc_structure.out_edge)
+            geo_integ(p, blackhole, acc_structure, self.detector)
             self.image_data[p.i, p.j] = acc_structure.spectrum(p.fP[1])
             sys.stdout.write("\rPhoton # %d" %photon)
             sys.stdout.flush()

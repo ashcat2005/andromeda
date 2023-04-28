@@ -46,11 +46,11 @@ class image_plane:
         theta = arccos((beta*sin(self.iota) + self.D*cos(self.iota))/r)
         phi = arctan(alpha/(self.D*sin(self.iota) - beta*cos(self.iota)))
 
-        #Initial position of the photon in spherical coordinates 
-        #(t=0, r, theta, phi)
+        # Initial position of the photon in spherical coordinates 
+        # (t=0, r, theta, phi)
         xin = [0., r, theta, phi]
                        
-        #Given a frequency value w0, this calculates the initial 
+        # Given a frequency value w0, this calculates the initial 
         # 4-momentum of the photon  
         w0 =  freq    
         aux = alpha**2 + (-beta*cos(self.iota) + self.D*sin(self.iota))**2 

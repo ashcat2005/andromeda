@@ -7,22 +7,20 @@ Parameters to create the Black Hole image
 """
 
 from numpy import pi
-from schwarzschild import *
+import schwarzschild 
+import kerr
 from thin_disk import *
 from image_plane import *
 
-###############################################################################
-############################## METRIC DEFINITION ##############################
-###############################################################################
-#metric = g
-#geodesics = geodesics
 
 
 ###############################################################################
-############################ BLACK HOLE PARAMETERS ############################
+############################ BLACK HOLE DEFINITION ############################
 ###############################################################################
 M = 1 # Mass
-blackhole = BlackHole(M)
+a = 0.9 # Angular Monmentum
+#blackhole = schwarzschild.BlackHole(M)
+blackhole = kerr.BlackHole(M,a)
 
 
 ###############################################################################
@@ -46,7 +44,8 @@ acc_structure = thin_disk(R_min, R_max)
 ###############################################################################
 ############################### IMAGE FILENAME ################################
 ###############################################################################
-filename = 'BlackHole.jpeg'
+filename = 'RotatingBlackHole.png'
+savefig = True
 
 
 

@@ -23,4 +23,4 @@ image.create_photons(blackhole, detector)
 image.create_image(blackhole, acc_structure)
 
 # Plot the image
-image.plot(savefig=True, filename=filename)
+image.plot(savefig=savefig, filename=filename)

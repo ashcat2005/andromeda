@@ -1,8 +1,7 @@
 """
 ===============================================================================
-Schwarzschild metric
+Kerr metric
 
-ds^2 = -(1-2M/r)dt^2 + dr^2 /(1-2M/r) + r^2 dtheta^2 + r^2 sin^2 (theta) dphi^2
 
 ===============================================================================
 - Event horizon at r=2M
@@ -12,15 +11,16 @@ ds^2 = -(1-2M/r)dt^2 + dr^2 /(1-2M/r) + r^2 dtheta^2 + r^2 sin^2 (theta) dphi^2
 ===============================================================================
 """
 
-from numpy import sin, cos
+from numpy import sin, cos, sqrt
 
 class BlackHole:
     '''
     Definition of the Black Hole described by Schwarzschild metric
     '''
-    def __init__(self, M):
+    def __init__(self, M, a):
         self.M = M
-        self.EH = 2*M
+        self.a = a
+        self.EH = self.M + sqrt(self.M**2 - self.a**2)
 
     def metric(self,x):
         '''
@@ -34,12 +34,16 @@ class BlackHole:
         phi = x[3]
         ===========================================================================
         '''
+        # Auxiliary functions
+        Delta = x[1]**2 - 2*self.M*x[1] + self.a**2
+        Sigma = x[1]**2 + (self.a*cos(x[2]))**2
+        
         # Metric components
-        g_tt = -(1 - 2*self.M/x[1])
-        g_rr = 1/(1- 2*self.M/x[1])
-        g_thth = x[1]**2
-        g_phph = (x[1]*sin(x[2]))**2
-        g_tph = 0.
+        g_tt = -(1 - 2*self.M*x[1]/Sigma)
+        g_rr = Sigma/Delta
+        g_thth = Sigma
+        g_phph = (x[1]**2 + self.a**2 + 2*(self.a**2)*self.M*x[1]*sin(x[2])**2/Sigma)* sin(x[2])**2
+        g_tph = -2*self.a*self.M*x[1]*sin(x[2])**2/Sigma
         
         return [g_tt, g_rr, g_thth, g_phph, g_tph]
 
@@ -63,17 +67,39 @@ class BlackHole:
         L = k_phi
         ===========================================================================
         '''
+
+        # Auxiliar Functions
+        Sigma = q[1]**2 + self.a**2 * cos(q[2])**2
+        Delta = q[1]**2 - 2*self.M*q[1] + self.a**2
+
+        W = -q[4]*(q[1]**2 + self.a**2) - self.a*q[7] 
+        partXi = q[1]**2 + (q[7] + self.a*q[4])**2 + self.a**2 *(1 + q[4]**2)*cos(q[2])**2 + (q[7]*cos(q[2])/sin(q[2]))**2
+        Xi = W**2 - Delta*partXi
+
+        dXidE = 2*W*(q[1]**2 + self.a**2) + 2.*self.a*Delta*(q[7] + self.a*q[4]*sin(q[2])**2)
+        dXidL = -2*self.a*W - 2*self.a*q[4]*Delta - 2*q[7]*Delta/(sin(q[2])**2)
+
+        dXidr = -4*q[1]*q[4]*W - 2*(q[1] - self.M)*partXi - 2*q[1]*Delta 
+
+        dAdr = (q[1] - self.M)/Sigma - (q[1]*Delta)/(Sigma**2)
+        dBdr = -q[1]/Sigma**2
+        dCdr = dXidr/(2*Delta*Sigma) - (Xi*(q[1]-self.M))/(Sigma*Delta**2) - q[1]*Xi/(Delta*Sigma**2)
+
+        auxth = (self.a**2) * cos(q[2])*sin(q[2])
+
+        dAdth = Delta*auxth/(Sigma**2)
+        dBdth = auxth/(Sigma**2)
+        dCdth = ((1+q[4]**2)*auxth + q[7]**2 * cos(q[2])/(sin(q[2])**3) )/Sigma + (Xi/(Delta*Sigma**2))*auxth
+
         # Geodesics differential equations 
-        dtdlmbda = q[4]*q[1]**2/(q[1]**2 - 2*self.M*q[1])
-        drdlmbda = (1 - 2*self.M/q[1])*q[5]
-        dthdlmbda = q[6]/q[1]**2
-        dphidlmbda = q[7]/((q[1]*sin(q[2]))**2)
+        dtdlmbda = dXidE/(2.*Delta*Sigma)
+        drdlmbda = (Delta/Sigma)*q[5]
+        dthdlmbda = q[6]/Sigma
+        dphidlmbda = - dXidL/(2.*Delta*Sigma)
         
         dk_tdlmbda = 0.
-        dk_rdlmbda = -self.M*(q[5]/q[1])**2 + q[6]**2/q[1]**3  \
-                +q[7]**2/((q[1]**3)*sin(q[2])**2) \
-                -self.M*(q[4]/(q[1]-2.*self.M))**2 
-        dk_thdlmbda = (cos(q[2])/sin(q[2])**3)*(q[7]/q[1])**2
+        dk_rdlmbda = -dAdr*q[5]**2 - dBdr*q[6]**2 + dCdr 
+        dk_thdlmbda = -dAdth*q[5]**2 - dBdth*q[6]**2 + dCdth 
         dk_phidlmbda = 0.
         
         return [dtdlmbda, drdlmbda, dthdlmbda, dphidlmbda, 

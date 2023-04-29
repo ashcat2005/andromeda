@@ -82,11 +82,11 @@ def geo_integ(p, blackhole, acc_structure, detector):
     sol = odeint(blackhole.geodesics, p.iC, lmbda)
     indx = len(sol[:,1])
     p.fP = [0,0,0,0,0,0,0,0]
-    for i in range(indx//3, indx):
+    for i in range(int(indx//2.5), indx-1):
         if sol[i,1] < blackhole.EH + 1e-5: 
             indx = i
             break
-        elif cos(sol[i,2])*cos(sol[i+1,2])<0:#abs(sol[i,1]*cos(sol[i,2])) < 1e-1:
+        elif cos(sol[i,2])*cos(sol[i+1,2]) < 0:#abs(sol[i,1]*cos(sol[i,2])) < 1e-1:
             if sol[i,1] > in_edge and sol[i,1] < out_edge:
                 indx = i
                 p.fP = sol[i]
@@ -122,7 +122,7 @@ class Image:
         '''
         Creates the image data 
         '''
-        self.image_data = zeros([self.detector.numPixels, self.detector.numPixels])
+        self.image_data = zeros([self.detector.x_pixels, self.detector.y_pixels])
         photon=1
         for p in self.photon_list:
             geo_integ(p, blackhole, acc_structure, self.detector)

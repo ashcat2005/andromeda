@@ -19,7 +19,7 @@ class image_plane:
     and the initial components of the momentum (kt, kr, ktheta, kphi)
     ===========================================================================
     '''
-    def __init__(self, D, iota , s_side , n_pixels):
+    def __init__(self, D, iota , x_s_side, y_s_side , n_pixels=25):
         '''
         =======================================================================
         Defines a square NxN pixels screen with side of size s_side, located 
@@ -33,11 +33,13 @@ class image_plane:
             self.numPixels = n_pixels + 1
         else:
             self.numPixels = n_pixels 
-
-        self.alphaRange = linspace(-s_side, s_side, self.numPixels)
-        self.betaRange = linspace(-s_side, s_side, self.numPixels)
-        print ("Size of the screen in Pixels:", self.numPixels, "X", self.numPixels)
-        print ("Number of Photons: ", (self.numPixels)**2)
+        
+        self.x_pixels = self.numPixels*x_s_side
+        self.y_pixels = self.numPixels*y_s_side
+        self.alphaRange = linspace(-x_s_side, x_s_side, self.x_pixels)
+        self.betaRange = linspace(-y_s_side, y_s_side, self.y_pixels)
+        print ("Size of the screen in Pixels: ", self.x_pixels, "X", self.y_pixels)
+        print ("Number of Photons: ", self.x_pixels*self.y_pixels)
 
 
     def photon_coords(self, alpha, beta, freq=1): 

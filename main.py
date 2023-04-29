@@ -10,8 +10,6 @@ Creates the Black Hole image
 from common import Image
 from config import *
 
-
-
 #################################### MAIN #####################################
 
 image = Image()

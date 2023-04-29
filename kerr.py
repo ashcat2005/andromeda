@@ -21,6 +21,10 @@ class BlackHole:
         self.M = M
         self.a = a
         self.EH = self.M + sqrt(self.M**2 - self.a**2)
+        Z1 = self.M + (self.M**2 - self.a**2)**(1/3)*((self.M + self.a)**(1/3) + (self.M - self.a)**(1/3))
+        Z2 = sqrt(3*self.a**2 + Z1**2)
+        self.ISCOco = 3*self.M + Z2 - sqrt((3*self.M - Z1)*(3*self.M + Z1 + 2*Z2)) 
+        self.ISCOcounter = 3*self.M + Z2 + sqrt((3*self.M - Z1)*(3*self.M + Z1 + 2*Z2))
 
     def metric(self,x):
         '''

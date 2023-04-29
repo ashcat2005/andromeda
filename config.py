@@ -18,7 +18,7 @@ from image_plane import *
 ############################ BLACK HOLE DEFINITION ############################
 ###############################################################################
 M = 1 # Mass
-a = 0.9 # Angular Monmentum
+a = 0.8 # Angular Monmentum
 #blackhole = schwarzschild.BlackHole(M)
 blackhole = kerr.BlackHole(M,a)
 
@@ -27,16 +27,19 @@ blackhole = kerr.BlackHole(M,a)
 ############################# DETECTOR PARAMETERS #############################
 ###############################################################################
 D = 100*M
-iota = pi/2.2
-screen_side = 20*M
-n_pixels = 300
-detector = image_plane(D=D, iota = iota, s_side = screen_side, n_pixels = n_pixels)
+iota = pi/2.1
+x_screen_side = 25*M
+y_screen_side = 15*M
+n_pixels = 25
+detector = image_plane(D=D, iota = iota, 
+                       x_s_side = x_screen_side, y_s_side = y_screen_side,
+                       n_pixels=n_pixels)
 
 
 ###############################################################################
 ############################# ACCRETION STRUCTURE #############################
 ###############################################################################
-R_min = 6*M
+R_min = blackhole.ISCOco + 2
 R_max = 20*M
 acc_structure = thin_disk(R_min, R_max)
 

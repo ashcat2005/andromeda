@@ -7,9 +7,9 @@ Parameters to create the Black Hole image
 """
 
 from numpy import pi
-import schwarzschild 
-import kerr
-from thin_disk import *
+#from metrics import schwarzschild
+from metrics import kerr
+from accretion_structures import thin_disk 
 from image_plane import *
 
 
@@ -30,7 +30,7 @@ D = 100*M
 iota = pi/2.1
 x_screen_side = 25*M
 y_screen_side = 15*M
-n_pixels = 25
+n_pixels = 10
 detector = image_plane(D=D, iota = iota, 
                        x_s_side = x_screen_side, y_s_side = y_screen_side,
                        n_pixels=n_pixels)
@@ -39,15 +39,15 @@ detector = image_plane(D=D, iota = iota,
 ###############################################################################
 ############################# ACCRETION STRUCTURE #############################
 ###############################################################################
-R_min = blackhole.ISCOco + 2
+R_min = blackhole.ISCOco 
 R_max = 20*M
-acc_structure = thin_disk(R_min, R_max)
+acc_structure = thin_disk.structure(blackhole, R_min, R_max)
 
 
 ###############################################################################
 ############################### IMAGE FILENAME ################################
 ###############################################################################
-filename = 'RotatingBlackHole.png'
+filename = 'RotatingBlackHoleThinDisk.png'
 savefig = True
 
 

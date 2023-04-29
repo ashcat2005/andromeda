@@ -126,7 +126,7 @@ class Image:
         photon=1
         for p in self.photon_list:
             geo_integ(p, blackhole, acc_structure, self.detector)
-            self.image_data[p.i, p.j] = acc_structure.spectrum(p.fP[1])
+            self.image_data[p.i, p.j] = acc_structure.energy_flux(p.fP[1])
             sys.stdout.write("\rPhoton # %d" %photon)
             sys.stdout.flush()
             #print('Photon #',photon)

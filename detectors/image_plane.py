@@ -10,7 +10,7 @@ curved spacetime
 from numpy import sqrt, sin, cos, arccos, arctan, linspace
 
 
-class image_plane:
+class detector:
     '''
     ===========================================================================
     Given the initial cartesian coordinates in the image plane (alpha,beta),

@@ -10,7 +10,7 @@ from numpy import pi
 #from metrics import schwarzschild
 from metrics import kerr
 from accretion_structures import thin_disk 
-from image_plane import *
+from detectors import image_plane 
 
 
 
@@ -18,7 +18,7 @@ from image_plane import *
 ############################ BLACK HOLE DEFINITION ############################
 ###############################################################################
 M = 1 # Mass
-a = 0.8 # Angular Monmentum
+a = 0.5 # Angular Monmentum
 #blackhole = schwarzschild.BlackHole(M)
 blackhole = kerr.BlackHole(M,a)
 
@@ -27,11 +27,11 @@ blackhole = kerr.BlackHole(M,a)
 ############################# DETECTOR PARAMETERS #############################
 ###############################################################################
 D = 100*M
-iota = pi/2.1
+iota = pi/2.3
 x_screen_side = 25*M
 y_screen_side = 15*M
-n_pixels = 10
-detector = image_plane(D=D, iota = iota, 
+n_pixels = 5
+detector = image_plane.detector(D=D, iota = iota, 
                        x_s_side = x_screen_side, y_s_side = y_screen_side,
                        n_pixels=n_pixels)
 
@@ -39,16 +39,16 @@ detector = image_plane(D=D, iota = iota,
 ###############################################################################
 ############################# ACCRETION STRUCTURE #############################
 ###############################################################################
-R_min = blackhole.ISCOco 
-R_max = 20*M
-acc_structure = thin_disk.structure(blackhole, R_min, R_max)
+#R_min = blackhole.ISCOco 
+#R_max = 20*M
+acc_structure = thin_disk.structure(blackhole)#, R_min = 10)
 
 
 ###############################################################################
 ############################### IMAGE FILENAME ################################
 ###############################################################################
-filename = 'RotatingBlackHoleThinDisk.png'
-savefig = True
+filename = 'NovikovThorneBlackHole'
+savefig = False
 
 
 

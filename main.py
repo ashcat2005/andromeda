@@ -7,7 +7,7 @@ Creates the Black Hole image
 ===============================================================================
 """
 
-from common import Image
+from common.common import Image
 from config import *
 import warnings
 warnings.filterwarnings('ignore')

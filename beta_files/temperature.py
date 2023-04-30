@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 from numpy import sin, cos, sqrt, arccos, pi, log
 
 M = 1
-a= 0.5
+a= 0.
 
 
 Z1 = M + (M**2 - a**2)**(1/3)*((M + a)**(1/3) + (M - a)**(1/3))
@@ -26,7 +26,7 @@ def f(r):
     return c*(t1 + t2 + t3 + t4)
 
 
-rr = np.linspace(6,20,1000)
+rr = np.linspace(7,20,1000)
 plt.figure()
 plt.plot(rr,f(rr))
 plt.show()

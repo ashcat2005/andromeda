@@ -21,6 +21,8 @@ class BlackHole:
     def __init__(self, M):
         self.M = M
         self.EH = 2*M
+        self.ISCOco = 6*M 
+        self.ISCOcounter = 6*M
 
     def metric(self,x):
         '''

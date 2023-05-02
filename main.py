@@ -12,6 +12,7 @@ Creates the Black Hole image
 from numpy import pi
 #from metrics import schwarzschild
 from metrics import kerr
+from metrics import num_schwarzschild
 from accretion_structures import thin_disk 
 from detectors import image_plane 
 from common.common import Image
@@ -26,7 +27,8 @@ from common.common import Image
 M = 1 # Mass
 a = 0.5 # Angular Monmentum
 #blackhole = schwarzschild.BlackHole(M)
-blackhole = kerr.BlackHole(M,a)
+#blackhole = kerr.BlackHole(M,a)
+blackhole = num_schwarzschild.BlackHole(M)
 
 
 ###############################################################################
@@ -36,7 +38,7 @@ D = 100*M
 iota = pi/2.3
 x_screen_side = 25*M
 y_screen_side = 15*M
-n_pixels = 5
+n_pixels = 25
 detector = image_plane.detector(D=D, iota = iota, 
                        x_s_side = x_screen_side, y_s_side = y_screen_side,
                        n_pixels=n_pixels)
@@ -53,8 +55,8 @@ acc_structure = thin_disk.structure(blackhole)#, R_min = 10)
 ###############################################################################
 ############################### IMAGE FILENAME ################################
 ###############################################################################
-filename = 'NovikovThorneBlackHole'
-savefig = False
+filename = 'NovikovThorneNumericalBlackHole'
+savefig = True
 
 
 

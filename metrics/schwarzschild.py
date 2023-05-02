@@ -20,6 +20,7 @@ class BlackHole:
     '''
     def __init__(self, M):
         self.M = M
+        self.a = 0
         self.EH = 2*M
         self.ISCOco = 6*M 
         self.ISCOcounter = 6*M

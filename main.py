@@ -49,7 +49,7 @@ detector = image_plane.detector(D=D, iota = iota,
 ###############################################################################
 #R_min = blackhole.ISCOco 
 #R_max = 20*M
-acc_structure = thin_disk.structure(blackhole)#, R_min = 10)
+acc_structure = thin_disk.structure(blackhole, R_min = 7)
 
 
 ###############################################################################

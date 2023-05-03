@@ -25,7 +25,7 @@ class structure:
 
         rr = linspace(self.in_edge, self.out_edge, 100000)
         ff = self.f(rr)
-        #ff = ff - min(ff)
+        ff = ff - min(ff)
         self.energy = interp1d(rr,ff)
 
     def f(self, r):

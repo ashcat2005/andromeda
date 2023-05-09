@@ -1,12 +1,11 @@
 """
 ===============================================================================
-Schwarzschild metric
+Scalar Hair Black Hole 
 
-ds^2 = -(1-2M/r)dt^2 + dr^2 /(1-2M/r) + r^2 dtheta^2 + r^2 sin^2 (theta) dphi^2
+ds^2 = g_tt dt^2 + g_rr dr^2  + r^2 dtheta^2 + r^2 sin^2 (theta) dphi^2
 
 ===============================================================================
-- Event horizon at r=2M
-- ISCO at r = 6M
+- Event horizon at r = 1
 
 @author: Eduard Larrañaga - 2023
 ===============================================================================
@@ -20,10 +19,13 @@ class BlackHole:
     Definition of the Black Hole described by Schwarzschild metric
     '''
     def __init__(self, M):
-        data = loadtxt('metrics/numerical_data/schwarzschild_data/N.txt')
-        self.N = interp1d(data[:,0], data[:,1])
-        data = loadtxt('metrics/numerical_data/schwarzschild_data/derN.txt')
-        self.dNdr = interp1d(data[:,0], data[:,1])
+        data = loadtxt('metrics/numerical_data/scalarBH/metricpp0=0.1.txt')
+        self.g_tt = interp1d(data[:,0], data[:,1], bounds_error=False, fill_value = 0)
+        self.g_rr = interp1d(data[:,0], data[:,2], bounds_error=False, fill_value = 0)
+        self.gtt = interp1d(data[:,0], data[:,3], bounds_error=False, fill_value = 0)
+        self.grr = interp1d(data[:,0], data[:,4], bounds_error=False, fill_value = 0)
+        self.drgtt = interp1d(data[:,0], data[:,5], bounds_error=False, fill_value = 0)
+        self.drgrr = interp1d(data[:,0], data[:,6], bounds_error=False, fill_value = 0)
         self.M = M
         self.a = 0.
         self.EH = 2*M
@@ -43,8 +45,8 @@ class BlackHole:
         ===========================================================================
         '''
         # Metric components
-        g_tt = - self.N(x[1])
-        g_rr = 1/self.N(x[1])
+        g_tt = self.g_tt(x[1])
+        g_rr = self.g_rr(x[1])
         g_thth = x[1]**2
         g_phph = (x[1]*sin(x[2]))**2
         g_tph = 0.
@@ -64,10 +66,10 @@ class BlackHole:
         ===========================================================================
         '''
         # Metric components
-        gtt = - 1/self.N(x[1])
-        grr = self.N(x[1])
-        gthth = 1/x[1]**2
-        gphph = 1/(x[1]*sin(x[2]))**2
+        gtt = self.gtt(x[1])
+        grr = self.grr(x[1])
+        gthth = 1./x[1]**2
+        gphph = 1./(x[1]*sin(x[2]))**2
         gtph = 0.
         
         return [gtt, grr, gthth, gphph, gtph]
@@ -85,8 +87,8 @@ class BlackHole:
         ===========================================================================
         '''
         # Derivative of the metric components
-        drgtt =  self.dNdr(x[1])/(self.N(x[1])**2)
-        drgrr = self.dNdr(x[1])
+        drgtt =  self.drgtt(x[1])
+        drgrr = self.drgrr(x[1])
         drgthth = -2/x[1]**3
         drgphph = -2/(x[1]**3*sin(x[2])**2)
         drgtph = 0.
@@ -145,4 +147,5 @@ if __name__ == '__main__':
     print('YOU NEED TO RUN THE main.py FILE TO GENERATE THE IMAGE')
     print('')
 
+    
 

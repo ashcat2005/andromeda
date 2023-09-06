@@ -86,7 +86,7 @@ def geo_integ(p, blackhole, acc_structure, detector):
         if sol[i,1] < blackhole.EH + 1e-5: 
             indx = i
             break
-        elif cos(sol[i,2])*cos(sol[i+1,2]) < 0:#abs(sol[i,1]*cos(sol[i,2])) < 1e-1:
+        elif cos(sol[i,2])*cos(sol[i+1,2]) < 0:#
             if sol[i,1] > in_edge and sol[i,1] < out_edge:
                 indx = i
                 p.fP = sol[i]
@@ -127,18 +127,30 @@ class Image:
         photon=1
         for p in self.photon_list:
             geo_integ(p, blackhole, acc_structure, self.detector)
-            self.image_data[p.i, p.j] += acc_structure.energy_flux(p.fP[1])
+            self.image_data[p.i, p.j] = acc_structure.energy_flux(p.fP[1])
             sys.stdout.write("\rPhoton # %d" %photon)
             sys.stdout.flush()
-            #print('Photon #',photon)
             photon +=1
 
-    def plot(self, savefig=False, filename=None):
+    def plot(self, savefig=False, filename=None, cmap='inferno'):
         '''
         Plots the image of the BH 
         '''
         ax = plt.figure().add_subplot(aspect='equal')
-        ax.imshow(self.image_data.T, cmap = 'inferno', origin='lower')
+        ax.imshow(self.image_data.T, cmap = cmap , origin='lower')
+        ax.set_xlabel(r'$\alpha$')
+        ax.set_ylabel(r'$\beta$')
+        if savefig:
+            plt.savefig('images/'+filename+'.png')
+        plt.show()
+    
+
+    def plotContours(self, savefig=False, filename=None, cmap='gray'):
+        '''
+        Contour plots in the image of the BH 
+        '''
+        ax = plt.figure().add_subplot(aspect='equal')
+        ax.contour(self.image_data.T, cmap = cmap)
         ax.set_xlabel(r'$\alpha$')
         ax.set_ylabel(r'$\beta$')
         if savefig:

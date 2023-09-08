@@ -4,8 +4,8 @@ Kerr metric
 
 
 ===============================================================================
-- Event horizon at r=2M
-- ISCO at r = 6M
+- Event horizon at r = M + sqrt(M^2 - a^2)
+- ISCO at r = 3M + Z2 -+ sqrt((3M - Z1)(3M + Z1 + 2Z2))
 
 @author: Eduard Larrañaga - 2023
 ===============================================================================
@@ -15,7 +15,7 @@ from numpy import sin, cos, sqrt
 
 class BlackHole:
     '''
-    Definition of the Black Hole described by Schwarzschild metric
+    Definition of the Black Hole described by Kerr metric
     '''
     def __init__(self, M, a):
         self.M = M
@@ -28,7 +28,7 @@ class BlackHole:
 
     def metric(self,x):
         '''
-        This procedure contains the Schwarzschild metric non-zero components in 
+        This procedure contains the Kerr metric non-zero components in 
         spherical coordinates
         ===========================================================================
         Coordinates 
@@ -54,7 +54,7 @@ class BlackHole:
     def geodesics(self, q, lmbda):
         '''
         This function contains the geodesic equations in Hamiltonian form for 
-        the Schwarzschild metric
+        photons moving in the Kerr spacetime
         ===========================================================================
         Coordinates and momentum components
         t = q[0]
@@ -67,13 +67,13 @@ class BlackHole:
         k_phi = q[7]
         ===========================================================================
         Conserved Quantities
-        E = - k_t
-        L = k_phi
+        E = - k_t = - q[4]
+        L = k_phi = q[7]
         ===========================================================================
         '''
 
         # Auxiliar Functions
-        Sigma = q[1]**2 + self.a**2 * cos(q[2])**2
+        Sigma = q[1]**2 + (self.a*cos(q[2]))**2
         Delta = q[1]**2 - 2*self.M*q[1] + self.a**2
 
         W = -q[4]*(q[1]**2 + self.a**2) - self.a*q[7] 

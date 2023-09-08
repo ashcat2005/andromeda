@@ -11,19 +11,13 @@ from numpy import sqrt, sin, cos, arccos, arctan, linspace
 
 
 class detector:
-    '''
-    ===========================================================================
-    Given the initial cartesian coordinates in the image plane (alpha,beta),
-    the distance D to the force center and the inclination angle i, 
-    this function calculates the initial spherical coordinates (r, theta, phi) 
-    and the initial components of the momentum (kt, kr, ktheta, kphi)
-    ===========================================================================
-    '''
     def __init__(self, D, iota , x_s_side, y_s_side , n_pixels=25):
         '''
         =======================================================================
-        Defines a square NxN pixels screen with side of size s_side, located 
-        at a distance D and with an inclination iota.
+        Defines a screen with sides of size x_s_side and y_s_side, located 
+        at a distance D and with an inclination iota. 
+        The number of pixels in each direction is given by the variables
+        x_pixels and y_pixels
         =======================================================================
         '''
         
@@ -38,11 +32,21 @@ class detector:
         self.y_pixels = self.numPixels*y_s_side
         self.alphaRange = linspace(-x_s_side, x_s_side, self.x_pixels)
         self.betaRange = linspace(-y_s_side, y_s_side, self.y_pixels)
+        print()
         print ("Size of the screen in Pixels: ", self.x_pixels, "X", self.y_pixels)
-        print ("Number of Photons: ", self.x_pixels*self.y_pixels)
+        print ("Total Number of Photons: ", self.x_pixels*self.y_pixels)
+        print()
 
 
     def photon_coords(self, alpha, beta, freq=1): 
+        '''
+        ===========================================================================
+        Given the initial cartesian coordinates in the image plane (alpha,beta),
+        the distance D to the force center and the inclination angle i, 
+        this function calculates the initial spherical coordinates (r, theta, phi) 
+        and the initial components of the momentum (kt, kr, ktheta, kphi)
+        ===========================================================================
+        '''
         # Transformation from (Alpha, Beta, D) to (r, theta, phi) 
         r = sqrt(alpha**2 + beta**2 + self.D**2)
         theta = arccos((beta*sin(self.iota) + self.D*cos(self.iota))/r)
@@ -52,7 +56,7 @@ class detector:
         # (t=0, r, theta, phi)
         xin = [0., r, theta, phi]
                        
-        # Given a frequency value w0, this calculates the initial 
+        # Given a frequency value w0=1, this calculates the initial 
         # 4-momentum of the photon  
         w0 =  freq    
         aux = alpha**2 + (-beta*cos(self.iota) + self.D*sin(self.iota))**2 

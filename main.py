@@ -10,10 +10,10 @@ Creates the Black Hole image
 #warnings.filterwarnings('ignore')
 
 from numpy import pi
-from metrics import schwarzschild
-from metrics import kerr
-from metrics import num_schwarzschild
-from metrics import scalar_hair_BH
+from black_holes import schwarzschild
+from black_holes import kerr
+from black_holes import num_schwarzschild
+from black_holes import scalar_hair_BH
 from accretion_structures import simple_disk 
 from accretion_structures import thin_disk 
 from accretion_structures import ring_disk 
@@ -29,17 +29,21 @@ from common.common import Image
 ============================ BLACK HOLE DEFINITION ============================
 ===============================================================================
 '''
+
 ##### SCHWARZSCHILD BH
 #M = 1 # Mass
 #blackhole = schwarzschild.BlackHole(M)
 
+
 ##### KERR BH
-M = 1 # Mass
+M = 1   # Mass
 a = 0.4 # Angular Monmentum
 blackhole = kerr.BlackHole(M,a)
 
+
 ##### NUMERICAL SCHWARZSCHILD BH
 #blackhole = num_schwarzschild.BlackHole(M)
+
 
 ##### SCALAR HAIR BH
 #M = 1
@@ -50,14 +54,15 @@ blackhole = kerr.BlackHole(M,a)
 =========================== DETECTOR PARAMETERS ===============================
 ===============================================================================
 '''
-D = 100*M
-iota = (85)*pi/180 #pi/2.3
+D = 100*M              # Distance to the BH
+iota = (pi/180)*(85)   # Inclination Angle
 x_screen_side = 25*M
 y_screen_side = 20*M
 n_pixels = 2
 detector = image_plane.detector(D=D, iota = iota, 
-                       x_s_side = x_screen_side, y_s_side = y_screen_side,
-                       n_pixels=n_pixels)
+                                x_s_side = x_screen_side, 
+                                y_s_side = y_screen_side,
+                                n_pixels=n_pixels)
 
 
 '''

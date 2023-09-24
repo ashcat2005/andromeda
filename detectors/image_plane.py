@@ -9,9 +9,8 @@ curved spacetime
 
 from numpy import sqrt, sin, cos, arccos, arctan, linspace
 
-
 class detector:
-    def __init__(self, D, iota , x_s_side, y_s_side , n_pixels=25):
+    def __init__(self, D, iota , x_s_side, y_s_side , n_pixels):
         '''
         =======================================================================
         Defines a screen with sides of size x_s_side and y_s_side, located 

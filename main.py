@@ -9,7 +9,7 @@ Creates the Black Hole image
 #import warnings
 #warnings.filterwarnings('ignore')
 
-from numpy import pi
+from numpy import pi, zeros, sum
 from black_holes import schwarzschild
 from black_holes import kerr
 from black_holes import num_schwarzschild
@@ -21,7 +21,7 @@ from accretion_structures import ring_disk_2
 from detectors import image_plane 
 from common.common import Image
 
-
+from parallel import *
 
 
 '''
@@ -58,7 +58,7 @@ D = 100*M              # Distance to the BH
 iota = (pi/180)*(85)   # Inclination Angle
 x_screen_side = 25*M
 y_screen_side = 20*M
-n_pixels = 2
+n_pixels = 25
 detector = image_plane.detector(D=D, iota = iota, 
                                 x_s_side = x_screen_side, 
                                 y_s_side = y_screen_side,
@@ -89,14 +89,8 @@ acc_structure = thin_disk.structure(blackhole, R_min = 6)
 ============================ IMAGE FILENAME ===================================
 ===============================================================================
 '''
-filename = 'ScalarHairBlackHoleNT3'
-savefig = False
-
-
-
-
-
-
+filename = 'Parallel'
+savefig = True
 
 
 '''
@@ -104,14 +98,40 @@ savefig = False
 ==================================== MAIN =====================================
 ===============================================================================
 '''
-image = Image()
+# Measure time
+start_time = MPI.Wtime()
+
+#initialize parallelization variables
+comm, rank, size = init_mpi()
+start_alpha, start_beta, end_alpha, end_beta = distribute(rank, size, detector)
+
+
+image = Image(start_alpha, start_beta, end_alpha, end_beta)
 
 # Photons creation
-image.create_photons(blackhole, detector)
+image.create_photons(blackhole, detector, rank)
 
 # Create the image data
-image.create_image(blackhole, acc_structure)
+image.create_image(blackhole, acc_structure,rank)
 
-# Plot the image
-image.plot(savefig=savefig, filename=filename, cmap='inferno')
-#image.plotContours(savefig=savefig, filename=filename)
+
+# gather photons 
+#comm.Barrier()
+gathered_image_data = comm.gather(image.image_data, root=0)
+
+if rank == 0:
+    final_image_data = zeros([detector.x_pixels, detector.y_pixels])
+
+    final_image_data = sum(gathered_image_data, axis=0)
+
+    image.image_data = final_image_data
+
+    end_time = MPI.Wtime()
+    elapsed_time = end_time - start_time
+    print(f"\n TIME: {elapsed_time} sec")
+
+    # Plot the image
+
+    image.plot(savefig=savefig, filename=filename, cmap='inferno')
+    #image.plotContours(savefig=savefig, filename=filename)
+

@@ -6,7 +6,7 @@ Common functions for ray tracing in a curved spacetime
 ===============================================================================
 """
 from scipy.integrate import odeint
-from numpy import linspace, cos, zeros
+from numpy import linspace, cos, zeros, argmax
 import matplotlib.pyplot as plt
 import sys
 
@@ -70,7 +70,7 @@ class Photon:
         and momentum to solve the geodesic equations.
         '''
         self.iC = initCond(self.xin, self.kin, blackhole)
-import numpy as np
+
 
 def geo_integ(p, blackhole, acc_structure, detector):
     '''
@@ -83,12 +83,15 @@ def geo_integ(p, blackhole, acc_structure, detector):
     p.fP = [0,0,0,0,0,0,0,0]
 
     #Put True in the index that met the condition
-    eh_condition = (sol[:,1] < (blackhole.EH + 1e-5))
-    edge_condition = (abs(sol[:, 1]*cos(sol[:, 2])) < 1e-1) & ( sol[:, 1] > in_edge) & (sol[:, 1] < out_edge)
+    eh_condition   = (sol[:,1] < (blackhole.EH + 1e-5))
 
-    # Take the first index with True value
-    indx_eh = np.argmax(eh_condition)
-    indx_edge = np.argmax(edge_condition)
+    edge_condition = (abs(sol[:, 1]*cos(sol[:, 2])) < 1e-1) & \
+                     ( sol[:, 1] > in_edge) & (sol[:, 1] < out_edge)
+
+    # Find the first index where the photon intersects the accretion structure.
+    indx_eh   = argmax(eh_condition)
+    indx_edge = argmax(edge_condition)
+
 
     if edge_condition[indx_edge]:  
         p.fP = sol[indx_edge]

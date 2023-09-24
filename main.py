@@ -89,8 +89,8 @@ acc_structure = thin_disk.structure(blackhole, R_min = 6)
 ============================ IMAGE FILENAME ===================================
 ===============================================================================
 '''
-filename = 'Parallel'
-savefig = True
+filename = 'Parallel-ver'
+savefig = False
 
 
 '''

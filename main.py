@@ -115,23 +115,25 @@ image.create_photons(blackhole, detector, rank)
 image.create_image(blackhole, acc_structure,rank)
 
 
-# gather photons 
-#comm.Barrier()
 gathered_image_data = comm.gather(image.image_data, root=0)
 
+# Check if the current process is the principal
 if rank == 0:
+    
     final_image_data = zeros([detector.x_pixels, detector.y_pixels])
 
+    # Sum up the image data gathered from all processes to get the final image.
     final_image_data = sum(gathered_image_data, axis=0)
 
+    # Assign the final image data to the respective variable.
     image.image_data = final_image_data
 
     end_time = MPI.Wtime()
+    
+    #total elapsed time.
     elapsed_time = end_time - start_time
     print(f"\n TIME: {elapsed_time} sec")
 
-    # Plot the image
-
+    # Plot the image using the final image data.
     image.plot(savefig=savefig, filename=filename, cmap='inferno')
-    #image.plotContours(savefig=savefig, filename=filename)
-
+    # image.plotContours(savefig=savefig, filename=filename)

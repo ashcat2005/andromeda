@@ -58,7 +58,7 @@ D = 100*M              # Distance to the BH
 iota = (pi/180)*(85)   # Inclination Angle
 x_screen_side = 25*M
 y_screen_side = 20*M
-n_pixels = 25
+n_pixels = 10
 detector = image_plane.detector(D=D, iota = iota, 
                                 x_s_side = x_screen_side, 
                                 y_s_side = y_screen_side,
@@ -109,10 +109,10 @@ start_alpha, start_beta, end_alpha, end_beta = distribute(rank, size, detector)
 image = Image(start_alpha, start_beta, end_alpha, end_beta)
 
 # Photons creation
-image.create_photons(blackhole, detector, rank)
+image.create_photons(blackhole, detector)
 
 # Create the image data
-image.create_image(blackhole, acc_structure,rank)
+image.create_image(blackhole, acc_structure)
 
 
 gathered_image_data = comm.gather(image.image_data, root=0)

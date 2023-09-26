@@ -37,7 +37,7 @@ from common.common import Image
 
 ##### KERR BH
 M = 1   # Mass
-a = 0.4 # Angular Monmentum
+a = 0.6 # Angular Monmentum
 blackhole = kerr.BlackHole(M,a)
 
 
@@ -55,14 +55,12 @@ blackhole = kerr.BlackHole(M,a)
 ===============================================================================
 '''
 D = 100*M              # Distance to the BH
-iota = (pi/180)*(85)   # Inclination Angle
-x_screen_side = 25*M
-y_screen_side = 20*M
-n_pixels = 2
-detector = image_plane.detector(D=D, iota = iota, 
-                                x_s_side = x_screen_side, 
-                                y_s_side = y_screen_side,
-                                n_pixels=n_pixels)
+iota = (pi/180)*(85)    # Inclination Angle
+x_side = 25*M
+x_pixels = 90
+
+detector = image_plane.detector(D=D, iota=iota, x_pixels=x_pixels, 
+                                x_side=x_side, ratio='16:9')
 
 
 '''
@@ -75,9 +73,9 @@ detector = image_plane.detector(D=D, iota = iota,
 
 
 ########### NOVIKOV-THORNE THIN DISK
-R_min = blackhole.ISCOco 
-R_max = 20*M
-acc_structure = thin_disk.structure(blackhole, R_min = 6)
+#R_min = blackhole.ISCOco 
+#R_max = 20*M
+acc_structure = thin_disk.structure(blackhole)
 
 ########### RINGS DISK
 

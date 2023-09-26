@@ -11,7 +11,7 @@ from numpy import sqrt, sin, cos, arccos, arctan, linspace
 
 
 class detector:
-    def __init__(self, D, iota , x_s_side, y_s_side , n_pixels=25):
+    def __init__(self, D, iota, x_side, x_pixels=25, ratio = '16:9'):
         '''
         =======================================================================
         Defines a screen with sides of size x_s_side and y_s_side, located 
@@ -23,15 +23,21 @@ class detector:
         
         self.D = D 
         self.iota = iota  
-        if n_pixels & 1:
-            self.numPixels = n_pixels + 1
+        if x_pixels & 1:
+            self.x_pixels = x_pixels + 1
         else:
-            self.numPixels = n_pixels 
-        
-        self.x_pixels = self.numPixels*x_s_side
-        self.y_pixels = self.numPixels*y_s_side
-        self.alphaRange = linspace(-x_s_side, x_s_side, self.x_pixels)
-        self.betaRange = linspace(-y_s_side, y_s_side, self.y_pixels)
+            self.x_pixels = x_pixels 
+
+        if ratio == '16:9':
+            self.y_pixels = int(x_pixels*9/16)
+            y_side = x_side*9/16
+
+        if ratio == '4:3':
+            self.y_pixels = int(x_pixels*3/4)
+            y_side = x_side*3/4
+
+        self.alphaRange = linspace(-x_side, x_side, self.x_pixels)
+        self.betaRange = linspace(-y_side, y_side, self.y_pixels)
         print()
         print ("Size of the screen in Pixels: ", self.x_pixels, "X", self.y_pixels)
         print ("Total Number of Photons: ", self.x_pixels*self.y_pixels)

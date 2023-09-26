@@ -140,6 +140,8 @@ class Image:
         ax.imshow(self.image_data.T, cmap = cmap , origin='lower')
         ax.set_xlabel(r'$\alpha$')
         ax.set_ylabel(r'$\beta$')
+        plt.tick_params(left = False, right = False , labelleft = False ,
+                        labelbottom = False, bottom = False)
         if savefig:
             plt.savefig('images/'+filename+'.png')
         plt.show()

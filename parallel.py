@@ -1,4 +1,5 @@
 from mpi4py import MPI
+from numpy import zeros, sum
 
 def init_mpi():
     comm = MPI.COMM_WORLD
@@ -23,3 +24,17 @@ def distribute(rank, size, detector):
     end_alpha, end_beta = divmod(end_idx, len(detector.betaRange))
 
     return start_alpha, start_beta, end_alpha, end_beta
+
+def gather_and_process_data(image_data, detector, rank, comm):
+    
+    gathered_image_data = comm.gather(image_data, root=0)
+
+    if rank == 0:
+        final_image_data = zeros([detector.x_pixels, detector.y_pixels])
+        final_image_data = sum(gathered_image_data, axis=0)
+        
+        return final_image_data
+    
+    else: return None
+
+

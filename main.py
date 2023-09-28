@@ -58,7 +58,7 @@ D = 100*M              # Distance to the BH
 iota = (pi/180)*(85)   # Inclination Angle
 x_screen_side = 25*M
 y_screen_side = 20*M
-n_pixels = 25
+n_pixels = 5
 detector = image_plane.detector(D=D, iota = iota, 
                                 x_s_side = x_screen_side, 
                                 y_s_side = y_screen_side,

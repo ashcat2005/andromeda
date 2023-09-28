@@ -20,10 +20,7 @@ class BlackHole:
     '''
     def __init__(self, M):
         self.M = M
-        self.a = 0
         self.EH = 2*M
-        self.ISCOco = 6*M 
-        self.ISCOcounter = 6*M
 
     def metric(self,x):
         '''
@@ -38,13 +35,12 @@ class BlackHole:
         ===========================================================================
         '''
         # Metric components
-        g_tt = -(1 - 2*self.M/x[1])
-        g_rr = 1/(1- 2*self.M/x[1])
-        g_thth = x[1]**2
-        g_phph = (x[1]*sin(x[2]))**2
-        g_tph = 0.
+        gtt = -(1. - 2.*self.M/x[1])
+        grr = 1./(1.- 2.*self.M/x[1])
+        gthth = x[1]**2
+        gphph = (x[1]*sin(x[2]))**2
         
-        return [g_tt, g_rr, g_thth, g_phph, g_tph]
+        return [gtt, grr, gthth, gphph]
 
     def geodesics(self, q, lmbda):
         '''
@@ -67,22 +63,27 @@ class BlackHole:
         ===========================================================================
         '''
         # Geodesics differential equations 
-        dtdlmbda = q[4]*q[1]**2/(q[1]**2 - 2*self.M*q[1])
-        drdlmbda = (1 - 2*self.M/q[1])*q[5]
-        dthdlmbda = q[6]/q[1]**2
-        dphidlmbda = q[7]/((q[1]*sin(q[2]))**2)
+        sq = sin(q[2])
+        sq2 = sq * sq
+        sq3 = sq * sq2
+        q1 = q[1]
+        q12 = q1 * q1
+        q13 = q12 * q1
+
+        dtdlmbda = q[4]*q12/(q12 - 2*self.M*q1)
+        drdlmbda = (1 - 2*self.M/q1)*q[5]
+        dthdlmbda = q[6]/q12
+        dphidlmbda = q[7]/(q12*sq2)
         
         dk_tdlmbda = 0.
-        dk_rdlmbda = -self.M*(q[5]/q[1])**2 + q[6]**2/q[1]**3  \
-                +q[7]**2/((q[1]**3)*sin(q[2])**2) \
-                -self.M*(q[4]/(q[1]-2.*self.M))**2 
-        dk_thdlmbda = (cos(q[2])/sin(q[2])**3)*(q[7]/q[1])**2
+        dk_rdlmbda = -self.M*((q[5]*q[5])/q12) + (q[6]*q[6])/q13  \
+                + (q[7]*q[7]) / (q13*sq2) \
+                -self.M*( (q[4]*q[4])/((q[1]-2.*self.M)*(q[1]-2.*self.M)) ) 
+        dk_thdlmbda = (cos(q[2])/sq3)*((q[7]*q[7])/q12)
         dk_phidlmbda = 0.
         
         return [dtdlmbda, drdlmbda, dthdlmbda, dphidlmbda, 
                 dk_tdlmbda, dk_rdlmbda, dk_thdlmbda, dk_phidlmbda]
-
-
 
 
 

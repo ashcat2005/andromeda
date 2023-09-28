@@ -109,10 +109,10 @@ start_alpha, start_beta, end_alpha, end_beta = distribute(rank, size, detector)
 image = Image(start_alpha, start_beta, end_alpha, end_beta)
 
 # Photons creation
-image.create_photons(blackhole, detector, rank)
+image.create_photons(blackhole, detector)
 
 # Create the image data
-image.create_image(blackhole, acc_structure,rank)
+image.create_image(blackhole, acc_structure)
 
 
 gathered_image_data = comm.gather(image.image_data, root=0)

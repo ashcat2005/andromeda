@@ -112,7 +112,7 @@ class Image:
         self.end_alpha   = end_alpha
         self.end_beta    = end_beta
 
-    def create_photons(self, blackhole, detector, rank):
+    def create_photons(self, blackhole, detector):
         '''
         Creates the photon list
         '''
@@ -143,7 +143,7 @@ class Image:
                 self.photon_list.append(p)
 
     
-    def create_image(self, blackhole, acc_structure, rank):
+    def create_image(self, blackhole, acc_structure):
         '''
         Creates the image data 
         '''
@@ -152,7 +152,6 @@ class Image:
         for p in self.photon_list:
             geo_integ(p, blackhole, acc_structure, self.detector)
             self.image_data[p.i, p.j] = acc_structure.energy_flux(p.fP[1])
-            #if rank == 0:
             sys.stdout.write("\rPhoton in thread 0 # %d" %photon)
             sys.stdout.flush()
             photon +=1

@@ -39,15 +39,18 @@ class BlackHole:
         ===========================================================================
         '''
         # Auxiliary functions
-        Delta = x[1]**2 - 2*self.M*x[1] + self.a**2
-        Sigma = x[1]**2 + (self.a*cos(x[2]))**2
+        r2 = x[1]**2
+        a2 = self.a**2
+        sin_theta = sin(x[2])
+        Delta = r2 - 2*self.M*x[1] + a2
+        Sigma = r2 + (self.a*cos(x[2]))**2
         
         # Metric components
         g_tt = -(1 - 2*self.M*x[1]/Sigma)
         g_rr = Sigma/Delta
         g_thth = Sigma
-        g_phph = (x[1]**2 + self.a**2 + 2*(self.a**2)*self.M*x[1]*sin(x[2])**2/Sigma)* sin(x[2])**2
-        g_tph = -2*self.a*self.M*x[1]*sin(x[2])**2/Sigma
+        g_phph = (r2 + a2 + 2*a2*self.M*x[1]*sin_theta**2/Sigma)*sin_theta**2
+        g_tph = -2*self.a*self.M*x[1]*sin_theta**2/Sigma
         
         return [g_tt, g_rr, g_thth, g_phph, g_tph]
 
@@ -73,27 +76,32 @@ class BlackHole:
         '''
 
         # Auxiliar Functions
-        Sigma = q[1]**2 + (self.a*cos(q[2]))**2
-        Delta = q[1]**2 - 2*self.M*q[1] + self.a**2
+        r2 = q[1]**2
+        a2 = self.a**2
+        sin_th = sin(q[2])
+        cos_th = cos(q[2])
+        Sigma = r2 + (self.a*cos_th)**2
+        Sigma2 = Sigma**2
+        Delta = r2 - 2*self.M*q[1] + a2
 
-        W = -q[4]*(q[1]**2 + self.a**2) - self.a*q[7] 
-        partXi = q[1]**2 + (q[7] + self.a*q[4])**2 + self.a**2 *(1 + q[4]**2)*cos(q[2])**2 + (q[7]*cos(q[2])/sin(q[2]))**2
+        W = -q[4]*(r2 + a2) - self.a*q[7] 
+        partXi = r2 + (q[7] + self.a*q[4])**2 + a2*(1 + q[4]**2)*cos_th**2 + (q[7]*cos_th/sin_th)**2
         Xi = W**2 - Delta*partXi
 
-        dXidE = 2*W*(q[1]**2 + self.a**2) + 2.*self.a*Delta*(q[7] + self.a*q[4]*sin(q[2])**2)
-        dXidL = -2*self.a*W - 2*self.a*q[4]*Delta - 2*q[7]*Delta/(sin(q[2])**2)
+        dXidE = 2*W*(r2 + a2) + 2.*self.a*Delta*(q[7] + self.a*q[4]*sin_th**2)
+        dXidL = -2*self.a*W - 2*self.a*q[4]*Delta - 2*q[7]*Delta/(sin_th**2)
 
         dXidr = -4*q[1]*q[4]*W - 2*(q[1] - self.M)*partXi - 2*q[1]*Delta 
 
-        dAdr = (q[1] - self.M)/Sigma - (q[1]*Delta)/(Sigma**2)
+        dAdr = (q[1] - self.M)/Sigma - (q[1]*Delta)/Sigma2
         dBdr = -q[1]/Sigma**2
-        dCdr = dXidr/(2*Delta*Sigma) - (Xi*(q[1]-self.M))/(Sigma*Delta**2) - q[1]*Xi/(Delta*Sigma**2)
+        dCdr = dXidr/(2*Delta*Sigma) - (Xi*(q[1]-self.M))/(Sigma*Delta**2) - q[1]*Xi/(Delta*Sigma2)
 
-        auxth = (self.a**2) * cos(q[2])*sin(q[2])
+        auxth = a2*cos_th*sin_th
 
-        dAdth = Delta*auxth/(Sigma**2)
-        dBdth = auxth/(Sigma**2)
-        dCdth = ((1+q[4]**2)*auxth + q[7]**2 * cos(q[2])/(sin(q[2])**3) )/Sigma + (Xi/(Delta*Sigma**2))*auxth
+        dAdth = Delta*auxth/Sigma2
+        dBdth = auxth/Sigma2
+        dCdth = ((1+q[4]**2)*auxth + q[7]**2 * cos_th/(sin_th**3) )/Sigma + (Xi/(Delta*Sigma2))*auxth
 
         # Geodesics differential equations 
         dtdlmbda = dXidE/(2.*Delta*Sigma)

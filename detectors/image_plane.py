@@ -55,8 +55,10 @@ class detector:
         '''
         # Transformation from (Alpha, Beta, D) to (r, theta, phi) 
         r = sqrt(alpha**2 + beta**2 + self.D**2)
-        theta = arccos((beta*sin(self.iota) + self.D*cos(self.iota))/r)
-        phi = arctan(alpha/(self.D*sin(self.iota) - beta*cos(self.iota)))
+        sin_iota = sin(self.iota)
+        cos_iota = cos(self.iota)
+        theta = arccos((beta*sin_iota + self.D*cos_iota)/r)
+        phi = arctan(alpha/(self.D*sin_iota - beta*cos_iota))
 
         # Initial position of the photon in spherical coordinates 
         # (t=0, r, theta, phi)
@@ -65,12 +67,12 @@ class detector:
         # Given a frequency value w0=1, this calculates the initial 
         # 4-momentum of the photon  
         w0 =  freq    
-        aux = alpha**2 + (-beta*cos(self.iota) + self.D*sin(self.iota))**2 
+        aux = alpha**2 + (-beta*cos_iota + self.D*sin_iota)**2 
         kr =  (self.D/r)*w0   
-        ktheta = (w0/sqrt(aux))*(-cos(self.iota) 
-                    + (beta*sin(self.iota) + self.D*cos(self.iota))*(self.D/(r**2)))  
-        kphi = - alpha*sin(self.iota)*w0/aux     
-        kt = sqrt(kr**2 + r**2 * ktheta**2 + r**2*(sin(theta))**2 *kphi**2)
+        ktheta = (w0/sqrt(aux))*(-cos_iota 
+                    + (beta*sin_iota + self.D*cos_iota)*(self.D/(r**2)))  
+        kphi = - alpha*sin_iota*w0/aux     
+        kt = sqrt(kr**2 + (r*ktheta)**2 + (r*kphi*sin(theta))**2 )
             
         # Initial 4-momentum in spherical coordinates  
         # (kt, kr, ktheta, kphi)

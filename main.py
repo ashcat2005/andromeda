@@ -20,6 +20,8 @@ from accretion_structures import ring_disk
 from accretion_structures import ring_disk_2
 from detectors import image_plane 
 from common.common import Image
+import warnings
+warnings.filterwarnings("ignore")
 
 
 
@@ -57,7 +59,7 @@ blackhole = kerr.BlackHole(M,a)
 D = 100*M              # Distance to the BH
 iota = (pi/180)*(85)    # Inclination Angle
 x_side = 25*M
-x_pixels = 90
+x_pixels = 140
 
 detector = image_plane.detector(D=D, iota=iota, x_pixels=x_pixels, 
                                 x_side=x_side, ratio='16:9')

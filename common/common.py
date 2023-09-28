@@ -6,7 +6,7 @@ Common functions for ray tracing in a curved spacetime
 ===============================================================================
 """
 from scipy.integrate import odeint
-from numpy import linspace, cos, zeros
+from numpy import linspace, cos, zeros, where, roll
 import matplotlib.pyplot as plt
 import sys
 
@@ -77,20 +77,20 @@ def geo_integ(p, blackhole, acc_structure, detector):
     Integrates the motion equations of the photon 
     '''
     in_edge, out_edge = acc_structure.in_edge, acc_structure.out_edge
-    final_lmbda = 2*detector.D
-    lmbda = linspace(0, -final_lmbda,8*final_lmbda)
+    final_lmbda = 1.5*detector.D
+    lmbda = linspace(0, -final_lmbda,int(8*final_lmbda))
     sol = odeint(blackhole.geodesics, p.iC, lmbda)
-    indx = len(sol[:,1])
     p.fP = [0,0,0,0,0,0,0,0]
-    for i in range(int(indx//2.5), indx-1):
-        if sol[i,1] < blackhole.EH + 1e-5: 
-            indx = i
+
+    zi = cos(sol[:,2])
+    zi1 = roll(zi,-1)
+    zi1[-1] = 0.
+    crit = zi*zi1
+    indxs = where(zi*zi1 < 0)[0]
+    for i in indxs: 
+        if sol[i,1] > in_edge and sol[i,1] < out_edge:
+            p.fP = sol[i]
             break
-        elif cos(sol[i,2])*cos(sol[i+1,2]) < 0:#
-            if sol[i,1] > in_edge and sol[i,1] < out_edge:
-                indx = i
-                p.fP = sol[i]
-                break
 
 class Image:
     '''
@@ -136,6 +136,7 @@ class Image:
         '''
         Plots the image of the BH 
         '''
+        self.image_data = self.image_data/self.image_data.max()
         ax = plt.figure().add_subplot(aspect='equal')
         ax.imshow(self.image_data.T, cmap = cmap , origin='lower')
         ax.set_xlabel(r'$\alpha$')

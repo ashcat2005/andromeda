@@ -6,9 +6,10 @@ Common functions for ray tracing in a curved spacetime
 ===============================================================================
 """
 from scipy.integrate import odeint
-from numpy import linspace, cos, zeros, where, roll
+from numpy import linspace, cos, zeros, where, roll, save
 import matplotlib.pyplot as plt
 import sys
+import time
 
 
 def initCond(x, k, blackhole):
@@ -76,36 +77,36 @@ def geo_integ(p, blackhole, acc_structure, detector):
     '''
     Integrates the motion equations of the photon 
     '''
-    in_edge, out_edge = acc_structure.in_edge, acc_structure.out_edge
     final_lmbda = 1.5*detector.D
-    lmbda = linspace(0, -final_lmbda,int(8*final_lmbda))
+    lmbda = linspace(0, -final_lmbda,int(7*final_lmbda))
     sol = odeint(blackhole.geodesics, p.iC, lmbda)
-    p.fP = [0,0,0,0,0,0,0,0]
-
+    
+    p.fP = [0.,0.,0.,0.,0.,0.,0.,0.]
     zi = cos(sol[:,2])
     zi1 = roll(zi,-1)
     zi1[-1] = 0.
-    crit = zi*zi1
     indxs = where(zi*zi1 < 0)[0]
     for i in indxs: 
-        if sol[i,1] > in_edge and sol[i,1] < out_edge:
+        if sol[i,1] < acc_structure.out_edge and sol[i,1] > acc_structure.in_edge:
             p.fP = sol[i]
             break
+
 
 class Image:
     '''
     Image class
     Creates the photon list and generates the image
     '''
-    def __init__(self):
-        pass
+    def __init__(self, blackhole, acc_structure, detector):
+        self.blackhole = blackhole
+        self.acc_structure = acc_structure
+        self.detector = detector
 
-    def create_photons(self, blackhole, detector):
+    def create_photons(self):
         '''
         Creates the photon list
         '''
         print('Creating photons ...')
-        self.detector = detector
         self.photon_list = []
         i=0
         for a in self.detector.alphaRange:
@@ -114,23 +115,31 @@ class Image:
                 p = Photon(alpha=a, beta=b)
                 p.xin, p.kin = self.detector.photon_coords(a, b) 
                 p.i, p.j = i, j
-                p.initial_conditions(blackhole)
+                p.initial_conditions(self.blackhole)
                 self.photon_list.append(p)
                 j += 1
             i += 1
     
-    def create_image(self, blackhole, acc_structure):
+    def create_image(self):
         '''
         Creates the image data 
         '''
         self.image_data = zeros([self.detector.x_pixels, self.detector.y_pixels])
         photon=1
+        print('Integrating trajectories ...')
+        start_time = time.time()
         for p in self.photon_list:
-            geo_integ(p, blackhole, acc_structure, self.detector)
-            self.image_data[p.i, p.j] = acc_structure.energy_flux(p.fP[1])
+            geo_integ(p, self.blackhole, self.acc_structure, self.detector)
+            self.image_data[p.i, p.j] = self.acc_structure.energy_flux(p.fP[1])
             sys.stdout.write("\rPhoton # %d" %photon)
             sys.stdout.flush()
             photon +=1
+        total_time= time.time() - start_time
+        print("\n\n--- Total time of integration : %s seconds ---" % total_time)
+        print("\n--- Time of integration : %s seconds/photon ---\n" % (total_time/len(self.photon_list)))
+
+    def save_data(self, filename):
+        save(filename+'.npy', self.image_data)
 
     def plot(self, savefig=False, filename=None, cmap='inferno'):
         '''

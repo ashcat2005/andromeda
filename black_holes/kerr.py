@@ -39,8 +39,8 @@ class BlackHole:
         ===========================================================================
         '''
         # Auxiliary functions
-        r2 = x[1]**2
-        a2 = self.a**2
+        r2 = x[1]*x[1]
+        a2 = self.a*self.a
         sin_theta = sin(x[2])
         Delta = r2 - 2*self.M*x[1] + a2
         Sigma = r2 + (self.a*cos(x[2]))**2

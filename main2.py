@@ -59,7 +59,7 @@ blackhole = kerr.BlackHole(M,a)
 D = 100*M              # Distance to the BH
 iota = (pi/180)*(85)    # Inclination Angle
 x_side = 25*M
-x_pixels = 140
+x_pixels = 100
 
 detector = image_plane.detector(D=D, iota=iota, x_pixels=x_pixels, 
                                 x_side=x_side, ratio='16:9')
@@ -115,3 +115,6 @@ image.create_image()
 # Plot the image
 image.plot(savefig=savefig, filename=filename, cmap='inferno')
 #image.plotContours(savefig=savefig, filename=filename)
+
+# Save the data
+#image.save_data('bh_data')

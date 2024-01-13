@@ -66,17 +66,19 @@ class BlackHole:
         L = k_phi
         ===========================================================================
         '''
+        # Auxiliar functions
+        sin_theta = sin(q[2])
         # Geodesics differential equations 
         dtdlmbda = q[4]*q[1]**2/(q[1]**2 - 2*self.M*q[1])
         drdlmbda = (1 - 2*self.M/q[1])*q[5]
         dthdlmbda = q[6]/q[1]**2
-        dphidlmbda = q[7]/((q[1]*sin(q[2]))**2)
+        dphidlmbda = q[7]/((q[1]*sin_theta)**2)
         
         dk_tdlmbda = 0.
         dk_rdlmbda = -self.M*(q[5]/q[1])**2 + q[6]**2/q[1]**3  \
-                +q[7]**2/((q[1]**3)*sin(q[2])**2) \
+                +q[7]**2/((q[1]**3)*sin_theta**2) \
                 -self.M*(q[4]/(q[1]-2.*self.M))**2 
-        dk_thdlmbda = (cos(q[2])/sin(q[2])**3)*(q[7]/q[1])**2
+        dk_thdlmbda = (cos(q[2])/sin_theta**3)*(q[7]/q[1])**2
         dk_phidlmbda = 0.
         
         return [dtdlmbda, drdlmbda, dthdlmbda, dphidlmbda, 

@@ -41,6 +41,7 @@ class detector:
         print()
         print ("Size of the screen in Pixels: ", self.x_pixels, "X", self.y_pixels)
         print ("Total Number of Photons: ", self.x_pixels*self.y_pixels)
+        print("Expected time of integration : %s seconds \n" % (self.x_pixels*self.y_pixels*0.003))
         print()
 
 
@@ -77,7 +78,8 @@ class detector:
         # Initial 4-momentum in spherical coordinates  
         # (kt, kr, ktheta, kphi)
         kin = [kt, kr, ktheta, kphi]
-        return xin, kin
+
+        return xin, kin 
  
 
 

@@ -80,28 +80,29 @@ class BlackHole:
         a2 = self.a**2
         sin_th = sin(q[2])
         cos_th = cos(q[2])
+        sin_th2 = sin_th*sin_th
         Sigma = r2 + (self.a*cos_th)**2
-        Sigma2 = Sigma**2
+        Sigma2 = Sigma*Sigma
         Delta = r2 - 2*self.M*q[1] + a2
 
         W = -q[4]*(r2 + a2) - self.a*q[7] 
-        partXi = r2 + (q[7] + self.a*q[4])**2 + a2*(1 + q[4]**2)*cos_th**2 + (q[7]*cos_th/sin_th)**2
+        partXi = r2 + (q[7] + self.a*q[4])**2 + a2*(1 + q[4]*q[4])*cos_th*cos_th + (q[7]*cos_th/sin_th)**2
         Xi = W**2 - Delta*partXi
 
-        dXidE = 2*W*(r2 + a2) + 2.*self.a*Delta*(q[7] + self.a*q[4]*sin_th**2)
-        dXidL = -2*self.a*W - 2*self.a*q[4]*Delta - 2*q[7]*Delta/(sin_th**2)
+        dXidE = 2*W*(r2 + a2) + 2.*self.a*Delta*(q[7] + self.a*q[4]*sin_th2)
+        dXidL = -2*self.a*W - 2*self.a*q[4]*Delta - 2*q[7]*Delta/sin_th2
 
         dXidr = -4*q[1]*q[4]*W - 2*(q[1] - self.M)*partXi - 2*q[1]*Delta 
 
         dAdr = (q[1] - self.M)/Sigma - (q[1]*Delta)/Sigma2
         dBdr = -q[1]/Sigma**2
-        dCdr = dXidr/(2*Delta*Sigma) - (Xi*(q[1]-self.M))/(Sigma*Delta**2) - q[1]*Xi/(Delta*Sigma2)
+        dCdr = dXidr/(2*Delta*Sigma) - (Xi*(q[1]-self.M))/(Sigma*Delta*Delta) - q[1]*Xi/(Delta*Sigma2)
 
         auxth = a2*cos_th*sin_th
 
         dAdth = Delta*auxth/Sigma2
         dBdth = auxth/Sigma2
-        dCdth = ((1+q[4]**2)*auxth + q[7]**2 * cos_th/(sin_th**3) )/Sigma + (Xi/(Delta*Sigma2))*auxth
+        dCdth = ((1+q[4]**2)*auxth + q[7]*q[7] * cos_th/(sin_th**3) )/Sigma + (Xi/(Delta*Sigma2))*auxth
 
         # Geodesics differential equations 
         dtdlmbda = dXidE/(2.*Delta*Sigma)

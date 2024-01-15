@@ -39,7 +39,7 @@ warnings.filterwarnings("ignore")
 
 ##### KERR BH
 M = 1   # Mass
-a = 0.6 # Angular Monmentum
+a = 0.7 # Angular Monmentum
 blackhole = kerr.BlackHole(M,a)
 
 
@@ -59,7 +59,7 @@ blackhole = kerr.BlackHole(M,a)
 D = 100*M              # Distance to the BH
 iota = (pi/180)*(85)    # Inclination Angle
 x_side = 25*M
-x_pixels = 100
+x_pixels = 200
 
 detector = image_plane.detector(D=D, iota=iota, x_pixels=x_pixels, 
                                 x_side=x_side, ratio='16:9')

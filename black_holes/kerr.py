@@ -41,16 +41,16 @@ class BlackHole:
         # Auxiliary functions
         r2 = x[1]*x[1]
         a2 = self.a*self.a
-        sin_theta = sin(x[2])
+        sin_theta2 = sin(x[2])*sin(x[2])
         Delta = r2 - 2*self.M*x[1] + a2
-        Sigma = r2 + (self.a*cos(x[2]))**2
+        Sigma = r2 + a2*cos(x[2])*cos(x[2])
         
         # Metric components
         g_tt = -(1 - 2*self.M*x[1]/Sigma)
         g_rr = Sigma/Delta
         g_thth = Sigma
-        g_phph = (r2 + a2 + 2*a2*self.M*x[1]*sin_theta**2/Sigma)*sin_theta**2
-        g_tph = -2*self.a*self.M*x[1]*sin_theta**2/Sigma
+        g_phph = (r2 + a2 + 2*a2*self.M*x[1]*sin_theta2/Sigma)*sin_theta2
+        g_tph = -2*self.a*self.M*x[1]*sin_theta2/Sigma
         
         return [g_tt, g_rr, g_thth, g_phph, g_tph]
 
@@ -76,17 +76,18 @@ class BlackHole:
         '''
 
         # Auxiliar Functions
-        r2 = q[1]**2
-        a2 = self.a**2
+        r2 = q[1]*q[1]
+        a2 = self.a*self.a
         sin_th = sin(q[2])
         cos_th = cos(q[2])
         sin_th2 = sin_th*sin_th
-        Sigma = r2 + (self.a*cos_th)**2
+        cos_th2 = cos_th*cos_th
+        Sigma = r2 + a2*cos_th2
         Sigma2 = Sigma*Sigma
         Delta = r2 - 2*self.M*q[1] + a2
 
         W = -q[4]*(r2 + a2) - self.a*q[7] 
-        partXi = r2 + (q[7] + self.a*q[4])**2 + a2*(1 + q[4]*q[4])*cos_th*cos_th + (q[7]*cos_th/sin_th)**2
+        partXi = r2 + (q[7] + self.a*q[4])**2 + a2*(1 + q[4]*q[4])*cos_th2 + q[7]*q[7]*cos_th2/sin_th2
         Xi = W**2 - Delta*partXi
 
         dXidE = 2*W*(r2 + a2) + 2.*self.a*Delta*(q[7] + self.a*q[4]*sin_th2)
@@ -102,7 +103,7 @@ class BlackHole:
 
         dAdth = Delta*auxth/Sigma2
         dBdth = auxth/Sigma2
-        dCdth = ((1+q[4]**2)*auxth + q[7]*q[7] * cos_th/(sin_th**3) )/Sigma + (Xi/(Delta*Sigma2))*auxth
+        dCdth = ((1+q[4]**2)*auxth + q[7]*q[7] * cos_th/(sin_th2*sin_th) )/Sigma + (Xi/(Delta*Sigma2))*auxth
 
         # Geodesics differential equations 
         dtdlmbda = dXidE/(2.*Delta*Sigma)
@@ -111,8 +112,8 @@ class BlackHole:
         dphidlmbda = - dXidL/(2.*Delta*Sigma)
         
         dk_tdlmbda = 0.
-        dk_rdlmbda = -dAdr*q[5]**2 - dBdr*q[6]**2 + dCdr 
-        dk_thdlmbda = -dAdth*q[5]**2 - dBdth*q[6]**2 + dCdth 
+        dk_rdlmbda = -dAdr*q[5]*q[5] - dBdr*q[6]*q[6] + dCdr 
+        dk_thdlmbda = -dAdth*q[5]*q[5] - dBdth*q[6]*q[6] + dCdth 
         dk_phidlmbda = 0.
         
         return [dtdlmbda, drdlmbda, dthdlmbda, dphidlmbda, 

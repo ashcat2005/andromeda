@@ -6,7 +6,7 @@ emitted from the surface of the disk
 @author: Eduard Larrañaga - 2023
 ===============================================================================
 """
-from numpy import sin, cos, sqrt, arccos, pi, log, linspace, min
+from numpy import cos, sqrt, arccos, pi, log, linspace, min
 from scipy.interpolate import interp1d
 
 class structure:
@@ -29,16 +29,18 @@ class structure:
         self.energy = interp1d(rr,ff)
 
     def f(self, r):
+        a_M = self.a/self.M
+        arccos_aM = arccos(a_M)
         x0 = sqrt(self.ISCO/self.M)
-        x1 = 2*cos((arccos(self.a/self.M) - pi)/3 )
-        x2 = 2*cos((arccos(self.a/self.M) + pi)/3 )
-        x3 = -2*cos((arccos(self.a/self.M))/3 )
+        x1 = 2*cos((arccos_aM - pi)/3 )
+        x2 = 2*cos((arccos_aM + pi)/3 )
+        x3 = -2*cos(arccos_aM/3 )
         x = sqrt(r/self.M)
-        c = 3/(2*(x**4)*(x**3 - 3*x + 2*self.a/self.M) )
+        c = 3/(2*(x**4)*(x**3 - 3*x + 2*a_M) )
         t1 = x - x0 - 3*self.a*log(x/x0)/(2*self.M)
-        t2 = -((3*(x1-self.a/self.M)**2)/(x1*(x1-x2)*(x1-x3)))*log((x-x1)/(x0-x1))
-        t3 = -((3*(x2-self.a/self.M)**2)/(x2*(x2-x1)*(x2-x3)))*log((x-x2)/(x0-x2))
-        t4 = -((3*(x3-self.a/self.M)**2)/(x3*(x3-x1)*(x3-x2)))*log((x-x3)/(x0-x3))
+        t2 = -((3*(x1-a_M)**2)/(x1*(x1-x2)*(x1-x3)))*log((x-x1)/(x0-x1))
+        t3 = -((3*(x2-a_M)**2)/(x2*(x2-x1)*(x2-x3)))*log((x-x2)/(x0-x2))
+        t4 = -((3*(x3-a_M)**2)/(x3*(x3-x1)*(x3-x2)))*log((x-x3)/(x0-x3))
         return c*(t1 + t2 + t3 + t4)
 
     
